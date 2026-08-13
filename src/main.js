@@ -18,7 +18,7 @@ app.innerHTML = `
             <img
                 id="professor-image"
                 class="professor-image"
-                src="/images/professor-start.png"
+                src="${import.meta.env.BASE_URL}images/professor-start.png"
                 alt="Professorin mit ihrem Hund im Labor"
             >
 
@@ -58,10 +58,12 @@ const tubeContainer = document.querySelector('#tube-container');
 const moveCounter = document.querySelector('#move-counter');
 const resultMessage = document.querySelector('#result-message');
 
+const BASE_URL = import.meta.env.BASE_URL;
+
 const characterImages = [
-    '/images/professor-start.png',
-    '/images/professor-success.png',
-    '/images/professor-fail.png'
+    `${BASE_URL}images/professor-start.png`,
+    `${BASE_URL}images/professor-success.png`,
+    `${BASE_URL}images/professor-fail.png`
 ];
 
 characterImages.forEach(src => {
@@ -397,7 +399,7 @@ function renderTubes() {
                     gameOver = true;
 
                     await showCharacterScreen(
-                        '/images/professor-success.png',
+                        `${BASE_URL}/images/professor-success.png`,
                         `EXPERIMENT SUCCESSFUL! ${moveCount} MOVES`,
                         'TRY AGAIN'
                     );
@@ -415,7 +417,7 @@ function renderTubes() {
                 console.log('💥 BOOM!');
 
                 await showCharacterScreen(
-                    '/images/professor-fail.png',
+                    `${BASE_URL}/images/professor-fail.png`,
                     'EXPERIMENT FAILED!',
                     'TRY AGAIN'
                 );
