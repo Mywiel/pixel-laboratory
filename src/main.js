@@ -328,8 +328,8 @@ function renderTubes() {
             }
 
             if (pour.result === POUR_RESULT.EXPLODED) {
-                await animatePour(sourceIndex, targetIndex);
                 gameOver = true;
+                await showPixelExplosion();
 
                 resultMessage.textContent = 'EXPERIMENT FAILED!';
                 restartButton.hidden = false;
@@ -357,6 +357,37 @@ restartButton.addEventListener('click', () => {
     renderTubes();
 });
 
+async function showPixelExplosion() {
+    const overlay = document.createElement('div');
+    overlay.classList.add('explosion-overlay');
+
+    overlay.innerHTML = `
+        <div class="big-pixel-explosion">
+            <div class="boom-layer boom-outer"></div>
+            <div class="boom-layer boom-middle"></div>
+            <div class="boom-layer boom-core"></div>
+
+            <div class="boom-debris debris-1"></div>
+            <div class="boom-debris debris-2"></div>
+            <div class="boom-debris debris-3"></div>
+            <div class="boom-debris debris-4"></div>
+            <div class="boom-debris debris-5"></div>
+            <div class="boom-debris debris-6"></div>
+
+            <div class="boom-text">BOOM!</div>
+        </div>
+    `;
+
+    document.body.appendChild(overlay);
+    document.body.classList.add('screen-shake');
+
+    await new Promise(resolve => setTimeout(resolve, 700));
+
+    document.body.classList.remove('screen-shake');
+    overlay.remove();
+}
+
+
 async function animatePour(sourceIndex, targetIndex, chemical) {
     const sourceFlask = document.querySelector(
         `.flask[data-index="${sourceIndex}"]`
@@ -383,28 +414,38 @@ async function animatePour(sourceIndex, targetIndex, chemical) {
 
     sourceFlask.style.setProperty('--move-x', `${moveX}px`);
     sourceFlask.style.setProperty('--move-y', `${moveY}px`);
-    sourceFlask.style.setProperty('--pour-rotation', `${direction * 45}deg`);
+    sourceFlask.style.setProperty(
+        '--pour-rotation',
+        `${direction * 45}deg`
+    );
 
     sourceFlask.classList.add('pouring');
 
-// Erst fast zum Ziel fahren und kippen
+    // Flasche fährt zum Ziel und kippt
     await new Promise(resolve => setTimeout(resolve, 400));
 
-// Dann erscheint der Flüssigkeitsstrahl
-    const stream = document.createElement('div');
-    stream.classList.add('pour-stream', chemical);
+    if (chemical) {
+        // Erlaubter Zug: Flüssigkeitsstrahl
+        const stream = document.createElement('div');
+        stream.classList.add('pour-stream', chemical);
 
-    const currentTargetRect = targetFlask.getBoundingClientRect();
+        const currentTargetRect = targetFlask.getBoundingClientRect();
 
-    stream.style.left = `${currentTargetRect.left + currentTargetRect.width / 2 - 3}px`;
-    stream.style.top = `${currentTargetRect.top - 28}px`;
+        stream.style.left =
+            `${currentTargetRect.left + currentTargetRect.width / 2 - 3}px`;
 
-    document.body.appendChild(stream);
+        stream.style.top =
+            `${currentTargetRect.top - 28}px`;
 
-// kurz "gießen"
-    await new Promise(resolve => setTimeout(resolve, 250));
+        document.body.appendChild(stream);
 
-    stream.remove();
+        await new Promise(resolve => setTimeout(resolve, 250));
+
+        stream.remove();
+    } else {
+        // Falsche Chemikalien: BOOM
+        await showPixelExplosion(targetIndex);
+    }
 
     sourceFlask.classList.remove('pouring');
     sourceFlask.classList.add('returning');
