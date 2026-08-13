@@ -76,20 +76,12 @@ h1 {
   overflow: visible;
 }
 
-/* schwarzer Innenraum */
-.flask-inside {
-  fill: #1c1c1c;
+.flask-shell {
+  fill: #e8e8e8;
 }
 
-/* helle Pixel-Kontur */
-.flask-outline {
-  fill: none;
-
-  stroke: #e8e8e8;
-  stroke-width: 4;
-
-  stroke-linejoin: miter;
-  stroke-linecap: square;
+.flask-cavity {
+  fill: #1c1c1c;
 }
 
 /* oberer Glasrand */
@@ -99,7 +91,7 @@ h1 {
 
 /* dunkler Teil des oberen Glasrandes */
 .flask-rim-dark {
-  fill: #555;
+  fill: #5a5a5a;
 }
 
 /* kleine graue Reflexe */
@@ -108,6 +100,14 @@ h1 {
 }
 
 .flask-highlight-side {
+  fill: #555;
+}
+
+.flask-highlight-neck {
+  fill: #666;
+}
+
+.flask-highlight-shoulder {
   fill: #555;
 }
 
