@@ -209,7 +209,17 @@ const LIQUID_PATH = createSymmetricalPath(
     liquidRightSide
 );
 
-function showCharacterScreen(image, text, buttonText) {
+async function showCharacterScreen(image, text, buttonText) {
+    const newImage = new Image();
+    newImage.src = image;
+
+    try {
+        await newImage.decode();
+    } catch {
+        // Falls decode() im Browser nicht klappt,
+        // verwenden wir das Bild trotzdem.
+    }
+
     professorImage.src = image;
     characterText.textContent = text;
     startButton.textContent = buttonText;
@@ -386,7 +396,7 @@ function renderTubes() {
                 if (isLevelComplete(tubes)) {
                     gameOver = true;
 
-                    showCharacterScreen(
+                    await showCharacterScreen(
                         '/images/professor-success.png',
                         `EXPERIMENT SUCCESSFUL! ${moveCount} MOVES`,
                         'TRY AGAIN'
@@ -404,7 +414,7 @@ function renderTubes() {
 
                 console.log('💥 BOOM!');
 
-                showCharacterScreen(
+                await showCharacterScreen(
                     '/images/professor-fail.png',
                     'EXPERIMENT FAILED!',
                     'TRY AGAIN'
