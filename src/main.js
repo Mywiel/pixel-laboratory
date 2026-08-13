@@ -15,12 +15,30 @@ app.innerHTML = `
     <main class="game">
 
         <section id="character-screen" class="character-screen">
-            <img
-                id="professor-image"
-                class="professor-image"
-                src="${import.meta.env.BASE_URL}images/professor-start.png"
-                alt="Professorin mit ihrem Hund im Labor"
-            >
+            <div class="professor-images">
+    <img
+        id="professor-start-image"
+        class="professor-image"
+        src="${import.meta.env.BASE_URL}images/professor-start.png"
+        alt="Professorin mit ihrem Hund im Labor"
+    >
+
+    <img
+        id="professor-success-image"
+        class="professor-image"
+        src="${import.meta.env.BASE_URL}images/professor-success.png"
+        alt="Begeisterte Professorin mit ihrem Hund"
+        hidden
+    >
+
+    <img
+        id="professor-fail-image"
+        class="professor-image"
+        src="${import.meta.env.BASE_URL}images/professor-fail.png"
+        alt="Professorin nach einer Explosion"
+        hidden
+    >
+</div>
 
             <p id="character-text" class="character-text">
                 READY FOR AN EXPERIMENT?
@@ -48,39 +66,26 @@ app.innerHTML = `
 `;
 
 const characterScreen = document.querySelector('#character-screen');
-const professorImage = document.querySelector('#professor-image');
 const characterText = document.querySelector('#character-text');
 const startButton = document.querySelector('#start-button');
+const professorStartImage =
+    document.querySelector('#professor-start-image');
 
+const professorSuccessImage =
+    document.querySelector('#professor-success-image');
+
+const professorFailImage =
+    document.querySelector('#professor-fail-image');
 const gameBoard = document.querySelector('#game-board');
 
 const tubeContainer = document.querySelector('#tube-container');
 const moveCounter = document.querySelector('#move-counter');
 const resultMessage = document.querySelector('#result-message');
 
-const BASE_URL = import.meta.env.BASE_URL;
-
-const characterImages = [
-    `${BASE_URL}images/professor-start.png`,
-    `${BASE_URL}images/professor-success.png`,
-    `${BASE_URL}images/professor-fail.png`
-];
-
-characterImages.forEach(src => {
-    const image = new Image();
-    image.src = src;
-});
-
 let selectedTubeIndex = null;
 let moveCount = 0;
 let gameOver = false;
 
-
-/*
- * ÄUSSERE FORM DES KOLBENS
- * Nur die rechte Seite wird definiert.
- * Die linke Seite wird automatisch gespiegelt.
- */
 const rightSide = [
     [78, 8],
     [78, 62],
@@ -211,18 +216,23 @@ const LIQUID_PATH = createSymmetricalPath(
     liquidRightSide
 );
 
-async function showCharacterScreen(image, text, buttonText) {
-    const newImage = new Image();
-    newImage.src = image;
+function showCharacterScreen(state, text, buttonText) {
+    professorStartImage.hidden = true;
+    professorSuccessImage.hidden = true;
+    professorFailImage.hidden = true;
 
-    try {
-        await newImage.decode();
-    } catch {
-        // Falls decode() im Browser nicht klappt,
-        // verwenden wir das Bild trotzdem.
+    if (state === 'start') {
+        professorStartImage.hidden = false;
     }
 
-    professorImage.src = image;
+    if (state === 'success') {
+        professorSuccessImage.hidden = false;
+    }
+
+    if (state === 'fail') {
+        professorFailImage.hidden = false;
+    }
+
     characterText.textContent = text;
     startButton.textContent = buttonText;
 
@@ -398,8 +408,8 @@ function renderTubes() {
                 if (isLevelComplete(tubes)) {
                     gameOver = true;
 
-                    await showCharacterScreen(
-                        `${BASE_URL}/images/professor-success.png`,
+                    showCharacterScreen(
+                        'success',
                         `EXPERIMENT SUCCESSFUL! ${moveCount} MOVES`,
                         'TRY AGAIN'
                     );
@@ -416,8 +426,8 @@ function renderTubes() {
 
                 console.log('💥 BOOM!');
 
-                await showCharacterScreen(
-                    `${BASE_URL}/images/professor-fail.png`,
+                showCharacterScreen(
+                    'fail',
                     'EXPERIMENT FAILED!',
                     'TRY AGAIN'
                 );
@@ -454,7 +464,7 @@ async function showPixelExplosion() {
     document.body.appendChild(overlay);
     document.body.classList.add('screen-shake');
 
-    await new Promise(resolve => setTimeout(resolve, 700));
+    await new Promise(resolve => setTimeout(resolve, 750));
 
     document.body.classList.remove('screen-shake');
     overlay.remove();
@@ -523,7 +533,7 @@ async function animatePour(sourceIndex, targetIndex, chemical) {
     sourceFlask.classList.remove('pouring');
     sourceFlask.classList.add('returning');
 
-    await new Promise(resolve => setTimeout(resolve, 350));
+    await new Promise(resolve => setTimeout(resolve, 650));
 
     sourceFlask.classList.remove('returning');
 }

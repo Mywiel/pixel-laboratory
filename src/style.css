@@ -266,7 +266,7 @@ h1 {
           rotate(var(--pour-rotation));
 
   transition:
-          transform 500ms steps(6);
+          transform 550ms steps(6);
 }
 
 .flask.returning {
@@ -334,7 +334,7 @@ h1 {
 
   background: rgba(255, 255, 255, 0);
 
-  animation: explosion-flash 700ms steps(4) forwards;
+  animation: explosion-flash 450ms steps(4) forwards;
 }
 
 
@@ -344,7 +344,7 @@ h1 {
   width: min(75vmin, 560px);
   aspect-ratio: 1;
 
-  animation: big-boom 700ms steps(6) forwards;
+  animation: big-boom 750ms steps(6) forwards;
 }
 
 
@@ -488,12 +488,17 @@ h1 {
     opacity: 1;
   }
 
-  35% {
-    transform: scale(0.65);
+  20% {
+    transform: scale(0.8);
     opacity: 1;
   }
 
-  65% {
+  35% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  70% {
     transform: scale(1);
     opacity: 1;
   }
@@ -525,7 +530,7 @@ h1 {
 
 
 body.screen-shake #app {
-  animation: screen-shake 700ms steps(7);
+  animation: screen-shake 450ms steps(7);
 }
 
 
