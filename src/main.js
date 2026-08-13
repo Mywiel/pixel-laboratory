@@ -13,22 +13,61 @@ const app = document.querySelector('#app');
 
 app.innerHTML = `
     <main class="game">
-        <h1>PIXEL LABORATORY</h1>
-        <div id="move-counter" class="move-counter">MOVES: 0</div>
-        <div id="result-message" class="result-message"></div>
 
-        <button id="restart-button" class="restart-button" hidden>
-            TRY AGAIN
-        </button>
+        <section id="character-screen" class="character-screen">
+            <img
+                id="professor-image"
+                class="professor-image"
+                src="/images/professor-start.png"
+                alt="Professorin mit ihrem Hund im Labor"
+            >
 
-        <div id="tube-container" class="tube-container"></div>
+            <p id="character-text" class="character-text">
+                READY FOR AN EXPERIMENT?
+            </p>
+
+            <button id="start-button" class="restart-button">
+                START EXPERIMENT
+            </button>
+        </section>
+
+
+        <section id="game-board" class="game-board" hidden>
+            <h1>PIXEL LABORATORY</h1>
+
+            <div id="move-counter" class="move-counter">
+                MOVES: 0
+            </div>
+
+            <div id="result-message" class="result-message"></div>
+
+            <div id="tube-container" class="tube-container"></div>
+        </section>
+
     </main>
 `;
+
+const characterScreen = document.querySelector('#character-screen');
+const professorImage = document.querySelector('#professor-image');
+const characterText = document.querySelector('#character-text');
+const startButton = document.querySelector('#start-button');
+
+const gameBoard = document.querySelector('#game-board');
 
 const tubeContainer = document.querySelector('#tube-container');
 const moveCounter = document.querySelector('#move-counter');
 const resultMessage = document.querySelector('#result-message');
-const restartButton = document.querySelector('#restart-button');
+
+const characterImages = [
+    '/images/professor-start.png',
+    '/images/professor-success.png',
+    '/images/professor-fail.png'
+];
+
+characterImages.forEach(src => {
+    const image = new Image();
+    image.src = src;
+});
 
 let selectedTubeIndex = null;
 let moveCount = 0;
@@ -170,6 +209,33 @@ const LIQUID_PATH = createSymmetricalPath(
     liquidRightSide
 );
 
+function showCharacterScreen(image, text, buttonText) {
+    professorImage.src = image;
+    characterText.textContent = text;
+    startButton.textContent = buttonText;
+
+    gameBoard.hidden = true;
+    characterScreen.hidden = false;
+}
+
+function showGameBoard() {
+    characterScreen.hidden = true;
+    gameBoard.hidden = false;
+}
+
+startButton.addEventListener('click', () => {
+    resetTubes();
+
+    moveCount = 0;
+    selectedTubeIndex = null;
+    gameOver = false;
+
+    moveCounter.textContent = 'MOVES: 0';
+    resultMessage.textContent = '';
+
+    showGameBoard();
+    renderTubes();
+});
 
 function renderTubes() {
     tubeContainer.innerHTML = '';
@@ -320,21 +386,29 @@ function renderTubes() {
                 if (isLevelComplete(tubes)) {
                     gameOver = true;
 
-                    resultMessage.textContent =
-                        `EXPERIMENT SUCCESSFUL! ${moveCount} MOVES`;
-
-                    restartButton.hidden = false;
+                    showCharacterScreen(
+                        '/images/professor-success.png',
+                        `EXPERIMENT SUCCESSFUL! ${moveCount} MOVES`,
+                        'TRY AGAIN'
+                    );
                 }
-            }
+
+                }
 
             if (pour.result === POUR_RESULT.EXPLODED) {
                 gameOver = true;
                 await showPixelExplosion();
 
                 resultMessage.textContent = 'EXPERIMENT FAILED!';
-                restartButton.hidden = false;
+
 
                 console.log('💥 BOOM!');
+
+                showCharacterScreen(
+                    '/images/professor-fail.png',
+                    'EXPERIMENT FAILED!',
+                    'TRY AGAIN'
+                );
             }
 
             renderTubes();
@@ -343,19 +417,6 @@ function renderTubes() {
         tubeContainer.appendChild(flask);
     });
 }
-restartButton.addEventListener('click', () => {
-    resetTubes();
-
-    moveCount = 0;
-    selectedTubeIndex = null;
-    gameOver = false;
-
-    moveCounter.textContent = 'MOVES: 0';
-    resultMessage.textContent = '';
-    restartButton.hidden = true;
-
-    renderTubes();
-});
 
 async function showPixelExplosion() {
     const overlay = document.createElement('div');

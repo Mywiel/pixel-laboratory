@@ -2,6 +2,10 @@
   box-sizing: border-box;
 }
 
+[hidden] {
+  display: none !important;
+}
+
 html,
 body {
   margin: 0;
@@ -557,4 +561,46 @@ body.screen-shake #app {
   100% {
     transform: translate(0, 0);
   }
+}
+
+.character-screen {
+  width: 100%;
+  min-height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 20px;
+  padding: 20px;
+}
+
+.professor-image {
+  display: block;
+
+  width: min(380px, 78vw);
+  max-height: 55vh;
+
+  object-fit: contain;
+}
+
+.character-text {
+  margin: 0;
+
+  font-size: 14px;
+  line-height: 1.8;
+  letter-spacing: 2px;
+
+  text-align: center;
+}
+
+.game-board {
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  gap: 48px;
 }
