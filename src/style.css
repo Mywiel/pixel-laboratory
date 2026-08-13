@@ -1,0 +1,214 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  min-height: 100vh;
+  background: #0f0f0f;
+  color: #f3f3f3;
+  font-family: monospace;
+}
+
+#app {
+  min-height: 100vh;
+}
+
+.game {
+  min-height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 48px;
+  padding: 32px 24px;
+}
+
+h1 {
+  margin: 0;
+
+  font-size: 32px;
+  letter-spacing: 5px;
+
+  text-align: center;
+}
+
+.tube-container {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+
+  flex-wrap: wrap;
+
+  gap: 34px;
+}
+
+/* kompletter Kolben */
+.flask {
+  width: 120px;
+  height: 152px;
+
+  cursor: pointer;
+
+  transition:
+          transform 100ms steps(1),
+          filter 100ms steps(1);
+}
+
+.flask:hover {
+  transform: translateY(-4px);
+  filter: brightness(1.08);
+}
+
+.flask-svg {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  overflow: visible;
+}
+
+/* schwarzer Innenraum */
+.flask-inside {
+  fill: #1c1c1c;
+}
+
+/* helle Pixel-Kontur */
+.flask-outline {
+  fill: none;
+
+  stroke: #e8e8e8;
+  stroke-width: 4;
+
+  stroke-linejoin: miter;
+  stroke-linecap: square;
+}
+
+/* oberer Glasrand */
+.flask-rim {
+  fill: #e8e8e8;
+}
+
+/* dunkler Teil des oberen Glasrandes */
+.flask-rim-dark {
+  fill: #555;
+}
+
+/* kleine graue Reflexe */
+.flask-highlight-top {
+  fill: #666;
+}
+
+.flask-highlight-side {
+  fill: #555;
+}
+
+/* Schatten unter dem Kolben */
+.flask-shadow {
+  fill: #555;
+}
+
+/* Flüssigkeiten */
+.liquid.pink {
+  fill: #ff5caf;
+}
+
+.liquid.blue {
+  fill: #11bde9;
+}
+
+.liquid.yellow {
+  fill: #ffd51f;
+}
+
+
+/* -------------------------
+   TABLET
+   ------------------------- */
+
+@media (max-width: 900px) {
+  .game {
+    gap: 38px;
+    padding: 28px 18px;
+  }
+
+  h1 {
+    font-size: 26px;
+    letter-spacing: 4px;
+  }
+
+  .tube-container {
+    gap: 24px;
+  }
+
+  .flask {
+    width: 125px;
+    height: 160px;
+  }
+}
+
+
+/* -------------------------
+   MOBILE
+   ------------------------- */
+
+@media (max-width: 700px) {
+  .game {
+    justify-content: flex-start;
+
+    gap: 28px;
+    padding: 24px 12px;
+  }
+
+  h1 {
+    margin-top: 16px;
+
+    font-size: 18px;
+    line-height: 1.5;
+    letter-spacing: 3px;
+  }
+
+  .tube-container {
+    max-width: 360px;
+
+    gap: 18px 12px;
+  }
+
+  .flask {
+    width: 94px;
+    height: 122px;
+  }
+
+  .flask:hover {
+    transform: none;
+    filter: none;
+  }
+}
+
+
+/* sehr kleine Smartphones */
+@media (max-width: 390px) {
+  .tube-container {
+    max-width: 310px;
+
+    gap: 14px 8px;
+  }
+
+  .flask {
+    width: 86px;
+    height: 112px;
+  }
+
+  h1 {
+    font-size: 16px;
+    letter-spacing: 2px;
+  }
+}
