@@ -4,7 +4,7 @@ const CHEMICALS = {
     YELLOW: "yellow"
 };
 
-const tubes = [
+const INITIAL_TUBES = [
     [CHEMICALS.PINK, CHEMICALS.BLUE, CHEMICALS.YELLOW, CHEMICALS.PINK],
     [CHEMICALS.BLUE, CHEMICALS.YELLOW, CHEMICALS.PINK, CHEMICALS.YELLOW],
     [CHEMICALS.BLUE, CHEMICALS.YELLOW, CHEMICALS.PINK, CHEMICALS.BLUE],
@@ -12,7 +12,17 @@ const tubes = [
     []
 ];
 
+const tubes = INITIAL_TUBES.map(tube => [...tube]);
+
 const TUBE_CAPACITY = 4;
+
+function resetTubes() {
+    tubes.length = 0;
+
+    INITIAL_TUBES.forEach(tube => {
+        tubes.push([...tube]);
+    });
+}
 
 function getTopChemical(tube) {
     if (tube.length === 0) return null;
@@ -41,35 +51,58 @@ const POUR_RESULT = {
     EXPLODED: "exploded"
 };
 
-function checkPour (sourceTube, targetTube) {
+function checkPour(sourceTube, targetTube) {
     const sourceChemical = getTopChemical(sourceTube);
     const targetChemical = getTopChemical(targetTube);
 
-    const topBlockSize = getTopBlockSize(sourceTube);
-    const freeSpace = TUBE_CAPACITY - targetTube.length;
-
     if (sourceTube.length === 0) {
-        return POUR_RESULT.SOURCE_EMPTY
+        return {
+            result: POUR_RESULT.SOURCE_EMPTY
+        };
     }
+
     if (sourceTube === targetTube) {
-        return POUR_RESULT.SAME_TUBE
+        return {
+            result: POUR_RESULT.SAME_TUBE
+        };
     }
+
     if (targetTube.length === TUBE_CAPACITY) {
-        return POUR_RESULT.TARGET_FULL
+        return {
+            result: POUR_RESULT.TARGET_FULL
+        };
     }
+
     if (targetTube.length === 0 || sourceChemical === targetChemical) {
+        const topBlockSize = getTopBlockSize(sourceTube);
+        const freeSpace = TUBE_CAPACITY - targetTube.length;
         const amountToPour = Math.min(topBlockSize, freeSpace);
 
-        for (let i =0; i < amountToPour; i++) {
-        targetTube.push(sourceChemical);
-        sourceTube.pop();
+        return {
+            result: POUR_RESULT.POURED,
+            chemical: sourceChemical,
+            amount: amountToPour
+        };
     }
-    return POUR_RESULT.POURED;}
 
     if (sourceChemical !== targetChemical) {
-        return POUR_RESULT.EXPLODED
+        return {
+            result: POUR_RESULT.EXPLODED,
+            sourceChemical: sourceChemical,
+            targetChemical: targetChemical
+        };
     }
-    return null;
+
+    return {
+        result: null
+    };
+}
+
+function executePour(sourceTube, targetTube, chemical, amount) {
+    for (let i = 0; i < amount; i++) {
+        targetTube.push(chemical);
+        sourceTube.pop();
+    }
 }
 
 function isTubeComplete(tube) {
@@ -94,6 +127,8 @@ function isLevelComplete(tubes) {
 export {
     tubes,
     checkPour,
+    executePour,
+    resetTubes,
     isLevelComplete,
     POUR_RESULT
 };

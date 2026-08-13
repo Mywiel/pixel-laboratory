@@ -1,16 +1,38 @@
+import '@fontsource/press-start-2p';
 import './style.css';
-import { tubes } from './game.js';
+import {
+    tubes,
+    checkPour,
+    executePour,
+    resetTubes,
+    POUR_RESULT,
+    isLevelComplete
+} from './game.js';
 
 const app = document.querySelector('#app');
 
 app.innerHTML = `
     <main class="game">
         <h1>PIXEL LABORATORY</h1>
+        <div id="move-counter" class="move-counter">MOVES: 0</div>
+        <div id="result-message" class="result-message"></div>
+
+        <button id="restart-button" class="restart-button" hidden>
+            TRY AGAIN
+        </button>
+
         <div id="tube-container" class="tube-container"></div>
     </main>
 `;
 
 const tubeContainer = document.querySelector('#tube-container');
+const moveCounter = document.querySelector('#move-counter');
+const resultMessage = document.querySelector('#result-message');
+const restartButton = document.querySelector('#restart-button');
+
+let selectedTubeIndex = null;
+let moveCount = 0;
+let gameOver = false;
 
 
 /*
@@ -156,6 +178,9 @@ function renderTubes() {
         const flask = document.createElement('div');
         flask.classList.add('flask');
         flask.dataset.index = index;
+        if (selectedTubeIndex === index) {
+            flask.classList.add('selected');
+        }
 
         const svg = document.createElementNS(
             'http://www.w3.org/2000/svg',
@@ -249,9 +274,80 @@ function renderTubes() {
         `;
 
         flask.appendChild(svg);
+        flask.addEventListener('click', () => {
+            if (gameOver) {
+                return;
+            }
+            if (selectedTubeIndex === null) {
+                selectedTubeIndex = index;
+                renderTubes();
+                return;
+            }
+
+            const sourceIndex = selectedTubeIndex;
+            const targetIndex = index;
+
+            const sourceTube = tubes[sourceIndex];
+            const targetTube = tubes[targetIndex];
+
+            const pour = checkPour(sourceTube, targetTube);
+
+            console.log(pour);
+
+            selectedTubeIndex = null;
+
+
+            if (pour.result === POUR_RESULT.POURED) {
+                executePour(
+                    sourceTube,
+                    targetTube,
+                    pour.chemical,
+                    pour.amount
+                );
+
+                moveCount++;
+                moveCounter.textContent = `MOVES: ${moveCount}`;
+
+                console.log(
+                    `Umgefüllt: ${pour.amount} × ${pour.chemical}`
+                );
+
+                if (isLevelComplete(tubes)) {
+                    gameOver = true;
+
+                    resultMessage.textContent =
+                        `EXPERIMENT SUCCESSFUL! ${moveCount} MOVES`;
+
+                    restartButton.hidden = false;
+                }
+            }
+
+            if (pour.result === POUR_RESULT.EXPLODED) {
+                gameOver = true;
+
+                resultMessage.textContent = 'EXPERIMENT FAILED!';
+                restartButton.hidden = false;
+
+                console.log('💥 BOOM!');
+            }
+
+            renderTubes();
+        });
+
         tubeContainer.appendChild(flask);
     });
 }
+restartButton.addEventListener('click', () => {
+    resetTubes();
 
+    moveCount = 0;
+    selectedTubeIndex = null;
+    gameOver = false;
 
+    moveCounter.textContent = 'MOVES: 0';
+    resultMessage.textContent = '';
+    restartButton.hidden = true;
+
+    renderTubes();
+});
 renderTubes();

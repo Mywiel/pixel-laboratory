@@ -12,7 +12,7 @@ body {
   min-height: 100vh;
   background: #0f0f0f;
   color: #f3f3f3;
-  font-family: monospace;
+  font-family: "Press Start 2P", monospace;
 }
 
 #app {
@@ -34,8 +34,8 @@ body {
 h1 {
   margin: 0;
 
-  font-size: 32px;
-  letter-spacing: 5px;
+  font-size: 26px;
+  letter-spacing: 4px;
 
   text-align: center;
 }
@@ -65,6 +65,11 @@ h1 {
 .flask:hover {
   transform: translateY(-4px);
   filter: brightness(1.08);
+}
+
+.flask.selected {
+  transform: translateY(-10px);
+  filter: brightness(1.2);
 }
 
 .flask-svg {
@@ -211,4 +216,35 @@ h1 {
     font-size: 16px;
     letter-spacing: 2px;
   }
+}
+
+.move-counter {
+  font-size: 16px;
+  letter-spacing: 2px;
+  color: #e8e8e8;
+}
+
+.result-message {
+  min-height: 24px;
+  font-size: 16px;
+  letter-spacing: 2px;
+  color: #ff5caf;
+  text-align: center;
+}
+.restart-button {
+  font-family: inherit;
+  font-size: 14px;
+  letter-spacing: 2px;
+  padding: 8px 14px;
+
+  color: #ff5caf;
+  background: #0f0f0f;
+  border: 2px solid #ff5caf;
+
+  cursor: pointer;
+}
+
+.restart-button:hover {
+  background: #ff5caf;
+  color: #0f0f0f;
 }
