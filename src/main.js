@@ -274,7 +274,7 @@ function renderTubes() {
         `;
 
         flask.appendChild(svg);
-        flask.addEventListener('click', () => {
+        flask.addEventListener('click', async () => {
             if (gameOver) {
                 return;
             }
@@ -298,6 +298,11 @@ function renderTubes() {
 
 
             if (pour.result === POUR_RESULT.POURED) {
+                await animatePour(
+                    sourceIndex,
+                    targetIndex,
+                    pour.chemical
+                );
                 executePour(
                     sourceTube,
                     targetTube,
@@ -323,6 +328,7 @@ function renderTubes() {
             }
 
             if (pour.result === POUR_RESULT.EXPLODED) {
+                await animatePour(sourceIndex, targetIndex);
                 gameOver = true;
 
                 resultMessage.textContent = 'EXPERIMENT FAILED!';
@@ -350,4 +356,61 @@ restartButton.addEventListener('click', () => {
 
     renderTubes();
 });
+
+async function animatePour(sourceIndex, targetIndex, chemical) {
+    const sourceFlask = document.querySelector(
+        `.flask[data-index="${sourceIndex}"]`
+    );
+
+    const targetFlask = document.querySelector(
+        `.flask[data-index="${targetIndex}"]`
+    );
+
+    if (!sourceFlask || !targetFlask) {
+        return;
+    }
+
+    const sourceRect = sourceFlask.getBoundingClientRect();
+    const targetRect = targetFlask.getBoundingClientRect();
+
+    const rawMoveX = targetRect.left - sourceRect.left;
+    const direction = rawMoveX > 0 ? 1 : -1;
+
+    const moveX = rawMoveX - (direction * 50);
+    const moveY = targetRect.top - sourceRect.top - 45;
+
+    sourceFlask.classList.remove('selected');
+
+    sourceFlask.style.setProperty('--move-x', `${moveX}px`);
+    sourceFlask.style.setProperty('--move-y', `${moveY}px`);
+    sourceFlask.style.setProperty('--pour-rotation', `${direction * 45}deg`);
+
+    sourceFlask.classList.add('pouring');
+
+// Erst fast zum Ziel fahren und kippen
+    await new Promise(resolve => setTimeout(resolve, 400));
+
+// Dann erscheint der Flüssigkeitsstrahl
+    const stream = document.createElement('div');
+    stream.classList.add('pour-stream', chemical);
+
+    const currentTargetRect = targetFlask.getBoundingClientRect();
+
+    stream.style.left = `${currentTargetRect.left + currentTargetRect.width / 2 - 3}px`;
+    stream.style.top = `${currentTargetRect.top - 28}px`;
+
+    document.body.appendChild(stream);
+
+// kurz "gießen"
+    await new Promise(resolve => setTimeout(resolve, 250));
+
+    stream.remove();
+
+    sourceFlask.classList.remove('pouring');
+    sourceFlask.classList.add('returning');
+
+    await new Promise(resolve => setTimeout(resolve, 350));
+
+    sourceFlask.classList.remove('returning');
+}
 renderTubes();

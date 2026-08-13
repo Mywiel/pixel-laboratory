@@ -248,3 +248,72 @@ h1 {
   background: #ff5caf;
   color: #0f0f0f;
 }
+
+.flask {
+  position: relative;
+  z-index: 1;
+}
+
+.flask.pouring {
+  z-index: 10;
+
+  transform:
+          translate(var(--move-x), var(--move-y))
+          rotate(var(--pour-rotation));
+
+  transition:
+          transform 500ms steps(6);
+}
+
+.flask.returning {
+  z-index: 10;
+
+  transform:
+          translate(0, 0)
+          rotate(0deg);
+
+  transition:
+          transform 300ms steps(4);
+}
+
+.pour-stream {
+  position: fixed;
+
+  width: 6px;
+  height: 5px;
+
+  z-index: 20;
+  pointer-events: none;
+
+  background: currentColor;
+
+  box-shadow:
+          0 7px 0 currentColor,
+          2px 14px 0 currentColor,
+          2px 21px 0 currentColor,
+          4px 28px 0 currentColor;
+
+  animation: pixel-pour 120ms steps(2) infinite;
+}
+
+.pour-stream.pink {
+  color: #ff5caf;
+}
+
+.pour-stream.blue {
+  color: #11bde9;
+}
+
+.pour-stream.yellow {
+  color: #ffd51f;
+}
+
+@keyframes pixel-pour {
+  0% {
+    transform: translateY(0);
+  }
+
+  100% {
+    transform: translateY(3px);
+  }
+}
