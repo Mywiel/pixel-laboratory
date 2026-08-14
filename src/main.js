@@ -13,6 +13,10 @@ const app = document.querySelector('#app');
 
 app.innerHTML = `
     <main class="game">
+    
+        <a id="exit-game" class="exit-game" href="#">
+            ← BACK TO ARCADE
+        </a>
 
         <section id="character-screen" class="character-screen">
             <div class="professor-images">
@@ -68,6 +72,10 @@ app.innerHTML = `
 const characterScreen = document.querySelector('#character-screen');
 const characterText = document.querySelector('#character-text');
 const startButton = document.querySelector('#start-button');
+const exitGame = document.querySelector('#exit-game');
+const ARCADE_URL = import.meta.env.VITE_ARCADE_URL;
+
+exitGame.href = ARCADE_URL;
 const professorStartImage =
     document.querySelector('#professor-start-image');
 
