@@ -6,7 +6,9 @@ import {
     executePour,
     resetTubes,
     POUR_RESULT,
-    isLevelComplete
+    isLevelComplete,
+    createLevelTwo,
+    loadLevel
 } from './game.js';
 
 const app = document.querySelector('#app');
@@ -93,6 +95,7 @@ const resultMessage = document.querySelector('#result-message');
 let selectedTubeIndex = null;
 let moveCount = 0;
 let gameOver = false;
+let currentLevel = 1;
 
 const rightSide = [
     [78, 8],
@@ -254,7 +257,12 @@ function showGameBoard() {
 }
 
 startButton.addEventListener('click', () => {
-    resetTubes();
+
+    if (currentLevel === 1) {
+        resetTubes();
+    } else {
+        loadLevel(createLevelTwo());
+    }
 
     moveCount = 0;
     selectedTubeIndex = null;
@@ -416,11 +424,21 @@ function renderTubes() {
                 if (isLevelComplete(tubes)) {
                     gameOver = true;
 
-                    showCharacterScreen(
-                        'success',
-                        `EXPERIMENT SUCCESSFUL! ${moveCount} MOVES`,
-                        'TRY AGAIN'
-                    );
+                    if (currentLevel === 1) {
+                        currentLevel = 2;
+
+                        showCharacterScreen(
+                            'success',
+                            `EXPERIMENT SUCCESSFUL! ${moveCount} MOVES`,
+                            'NEXT EXPERIMENT'
+                        );
+                    } else {
+                        showCharacterScreen(
+                            'success',
+                            `EXPERIMENT SUCCESSFUL! ${moveCount} MOVES`,
+                            'NEW EXPERIMENT'
+                        );
+                    }
                 }
 
                 }

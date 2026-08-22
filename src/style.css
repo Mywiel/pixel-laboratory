@@ -138,6 +138,15 @@ h1 {
   fill: #ffd51f;
 }
 
+.liquid.green {
+  fill: #0d9913;
+}
+
+.liquid.orange {
+  fill: #ff8a24;
+}
+
+
 
 /* -------------------------
    TABLET
@@ -310,6 +319,13 @@ h1 {
 
 .pour-stream.yellow {
   color: #ffd51f;
+}
+.pour-stream.green {
+  color: #0d9913;
+}
+
+.pour-stream.orange {
+  color: #ff8a24;
 }
 
 @keyframes pixel-pour {
